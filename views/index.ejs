@@ -7,5 +7,30 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+
+
+    <div id="paypal-button"></div>
+
+    <!-- PayPal Client-side API script-->
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <!-- Script to render button -->
+    <script>
+        paypal.Button.render({
+
+            env: 'production', // Optional: specify 'sandbox' environment
+
+            payment: function() {
+                // Set up the payment here, when the buyer clicks on the button
+            },
+
+            onAuthorize: function(data, actions) {
+                // Execute the payment here, when the buyer approves the transaction
+            }
+
+        }, '#paypal-button');
+    </script>
+
   </body>
 </html>
