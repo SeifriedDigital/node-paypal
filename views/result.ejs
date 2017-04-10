@@ -1,7 +1,7 @@
-<h1><%=msg%></h1>
+<h1>Transaction Status: <%= state %></h1>
 
-<% if (transactionId) { %>
-    <p>Your payment ID is: <%= transactionId %></p>
+<% if (id.length > 0) { %>
+    <p>Your payment ID is: <%= id %></p>
 <% } %>
 
 <a href="/">Home</a>
