@@ -5,8 +5,58 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1>Send Us Free Money</h1>
+    <p>Welcome to my node application where I am testing PayPal integration with Node.js</p>
+
+    <form method="post">
+      <label for="amount">Amount</label>
+      <input id="amount" name="amount" type="number" required>
+      <br>
+
+      <label for="payment">Payment</label>
+     <input>
+
+      <div id="paypal-button"></div>
+    </form>
+
+
+
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+        paypal.Button.render({
+
+            // Change env from production to sandbox environment when testing in sandbox mode!
+            // Make sure you do this or else nothing will work and you will be debugging and reading for 8 hours <br>
+            // hating everything and cursing PayPal to death for hours on end.
+            // This is embarrassing and you suck because of this!
+            env: 'sandbox',
+
+            payment: function(resolve, reject) {
+
+                var CREATE_PAYMENT_URL = '/api/create-payment';
+
+                console.log(paypal.request.post(CREATE_PAYMENT_URL))
+                return paypal.request.post(CREATE_PAYMENT_URL)
+                    .then(function(data) { resolve(data.paymentID); })
+                    .catch(function(err) { reject(err); });
+            },
+
+            onAuthorize: function(data) {
+
+                // Note: you can display a confirmation page before executing
+
+                var EXECUTE_PAYMENT_URL = '/api/execute-payment';
+
+                return paypal.request.post(EXECUTE_PAYMENT_URL,
+                    { paymentID: data.paymentID, payerID: data.payerID })
+
+                    .then(function(data) { /* Go to a success page */ })
+                    .catch(function(err) { /* Go to a err page */ });
+            }
+
+        }, '#paypal-button');
+    </script>
 
   </body>
 </html>
