@@ -34,7 +34,7 @@
 
             payment: function(resolve, reject) {
 
-                var CREATE_PAYMENT_URL = '/api/create-payment';
+                var CREATE_PAYMENT_URL = 'http://localhost:3000/create-payment';
 
                 console.log(paypal.request.post(CREATE_PAYMENT_URL))
                 return paypal.request.post(CREATE_PAYMENT_URL)
@@ -46,7 +46,7 @@
 
                 // Note: you can display a confirmation page before executing
 
-                var EXECUTE_PAYMENT_URL = '/api/execute-payment';
+                var EXECUTE_PAYMENT_URL = 'http://localhost:3000/execute-payment';
 
                 return paypal.request.post(EXECUTE_PAYMENT_URL,
                     { paymentID: data.paymentID, payerID: data.payerID })

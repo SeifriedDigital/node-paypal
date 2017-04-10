@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET payment page. */
-router.post('/api/create-payment', function(req, res, next) {
+router.post('/create-payment', function(req, res, next) {
 
     var create_payment_json = {
         "intent": "sale",
@@ -27,8 +27,8 @@ router.post('/api/create-payment', function(req, res, next) {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost",
-            "cancel_url": "http://localhost"
+            "return_url": "http://localhost:3000/execute-payment",
+            "cancel_url": "http://localhost:3000/cancel"
         },
         "transactions": [{
             "item_list": {
@@ -56,10 +56,41 @@ router.post('/api/create-payment', function(req, res, next) {
             console.log("Create Payment Response");
             console.log(payment);
 
-            res.json(
+            res.json({
+                'paymentID': payment.id
+            })
+        }
+    });
+})
+
+router.post('/execute-payment', function(req, res, next) {
+    var paymentID = req.body.paymentID;
+    var payerID = req.body.payerID;
+
+    var execute_payment_json = {
+        "payer_id": payerID,
+        "transactions": [{
+            "amount": {
+                "currency": "USD",
+                "total": "1.00"
+            }
+        }]
+    };
+
+
+    paypal.payment.execute(paymentID, execute_payment_json, function (error, payment) {
+        if (error) {
+            console.log(error);
+            throw error;
+        } else {
+            console.log("Get Payment Response");
+            console.log(payment);
+
+            res.render('result',
                 {
-                    "paymentID":payment.id
-                })
+                    title: 'Success',
+                    msg: 'Transaction was confirmed!'
+                });
         }
     });
 });
