@@ -19,35 +19,32 @@ router.get('/', function(req, res, next) {
 })
 
 router.get('/result', function(req, res, next) {
+    res.redirect('/')
+})
+
+router.get('/result/error/:error', function (req, res, next) {
+    let error = req.params.error
+
     res.render('result', {
-        title: "Success",
-        state: "Success",
-        id: 123123
+        title: 'Transaction Error',
+        error: error
     })
 })
 
 router.get('/result/:state/:id', function(req, res, next) {
+    let state = req.params.state
+    let id = req.params.id
 
-    // Get result state
-    var state = req.params.state
+    console.log(state)
+    console.log(id)
 
-    // Get sale ID from url
-    var id = req.params.id
-
-
-    if (state == 'success') {
-
-        console.log('Loading result view')
-
-        res.render('result', {
-            title: "Success",
-            state: state,
-            id: id
-        })
-    }
+    res.render('result', {
+        title: 'Transaction Results',
+        state: state,
+        id: id
+    })
 })
 
-/* GET payment page. */
 router.post('/create-payment', function(req, res, next) {
 
     var create_payment_json = {
@@ -57,7 +54,7 @@ router.post('/create-payment', function(req, res, next) {
         },
         "redirect_urls": {
             "return_url": "http://localhost:3000/result",
-            "cancel_url": "http://localhost:3000/cancel"
+            "cancel_url": "http://localhost:3000/"
         },
         "transactions": [{
             "item_list": {
@@ -75,40 +72,29 @@ router.post('/create-payment', function(req, res, next) {
             },
             "description": "This is the payment description."
         }]
-    }
+    };
 
 
     paypal.payment.create(create_payment_json, function (error, payment) {
         if (error) {
-            throw error
+            throw error;
         } else {
-            console.log("Create Payment Response")
-            console.log(payment)
+            console.log("Create Payment Response");
+            console.log(payment);
 
             res.json({
-                'paymentID': payment.id
-            })
+                paymentID: payment.id
+            });
         }
     })
-})
-
-router.get('/execute-payment', function(req, res, next) {
-    res.render('result')
 })
 
 router.post('/execute-payment', function(req, res, next) {
     var paymentID = req.body.paymentID
     var payerID = req.body.payerID
 
-
     var execute_payment_json = {
         "payer_id": payerID,
-        "transactions": [{
-            "amount": {
-                "currency": "USD",
-                "total": "1.00"
-            }
-        }]
     }
 
     paypal.payment.execute(paymentID, execute_payment_json, function (error, payment) {
@@ -118,13 +104,21 @@ router.post('/execute-payment', function(req, res, next) {
         } else {
             console.log("Get Payment Response")
             console.log(JSON.stringify(payment))
-            var sale = payment.transactions[0].related_resources[0].sale
-            //
-            console.log(sale)
+            console.log(payment)
 
-            // res.redirect(304, 'http://localhost:3000/result/success/'+sale.id)
+            // Get sale object from response
+            var sale = payment.transactions[0].related_resources[0].sale
+
+            // Pass data to body for client side redirect
+            res.json({
+                paymentID: paymentID,
+                payerID: payerID,
+                state: sale.state,
+                saleID: sale.id
+            })
         }
     })
 })
+
 
 module.exports = router

@@ -51,8 +51,12 @@
                 return paypal.request.post(EXECUTE_PAYMENT_URL,
                     { paymentID: data.paymentID, payerID: data.payerID })
 
-                    .then(function(data) { /* Go to a success page */ })
-                    .catch(function(err) { /* Go to a err page */ });
+                    .then(function(data) {
+                        window.location="/result/" + data.state + "/" + data.saleID;
+                    })
+                    .catch(function(err) {
+                        window.location="/result/error/" + err
+                    });
             }
 
         }, '#paypal-button');

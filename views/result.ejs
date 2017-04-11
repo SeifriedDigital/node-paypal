@@ -1,7 +1,14 @@
-<h1>Transaction Status: <%= state %></h1>
-
-<% if (id.length > 0) { %>
-    <p>Your payment ID is: <%= id %></p>
+<% if (state.length > 0) { %>
+    <h1>Transaction State: <%= state %></h1>
+<% } else if (err.length > 0) { %>
+    <h1>Transaction Error</h1>
+    <p><%= error %></p>
 <% } %>
 
-<a href="/">Home</a>
+<% if (id.length > 0) { %>
+    <p>Please keep this as a reference: <%= id %></p>
+
+    <p>Thank you!</p>
+<% } %>
+
+<a href="/" title="Home">Home</a>
