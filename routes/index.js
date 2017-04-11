@@ -25,6 +25,8 @@ router.get('/result', function(req, res, next) {
 router.get('/result/error/:error', function (req, res, next) {
     let error = req.params.error
 
+    console.log("Transaction error: " + error)
+
     res.render('result', {
         title: 'Transaction Error',
         error: error
@@ -35,8 +37,8 @@ router.get('/result/:state/:id', function(req, res, next) {
     let state = req.params.state
     let id = req.params.id
 
-    console.log(state)
-    console.log(id)
+    console.log("Sale state: " + state)
+    console.log("Sale ID :" + id)
 
     res.render('result', {
         title: 'Transaction Results',
@@ -104,7 +106,6 @@ router.post('/execute-payment', function(req, res, next) {
         } else {
             console.log("Get Payment Response")
             console.log(JSON.stringify(payment))
-            console.log(payment)
 
             // Get sale object from response
             var sale = payment.transactions[0].related_resources[0].sale
