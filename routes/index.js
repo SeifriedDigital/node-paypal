@@ -47,7 +47,13 @@ router.get('/result/:state/:id', function(req, res, next) {
     })
 })
 
-router.post('/create-payment', function(req, res, next) {
+router.post('/create-payment/:amount', function(req, res, next) {
+    var amount = req.params.amount
+    console.log(amount)
+
+    if (amount = 0) {
+        res.redirect('./')
+    }
 
     var create_payment_json = {
         "intent": "sale",
@@ -61,16 +67,16 @@ router.post('/create-payment', function(req, res, next) {
         "transactions": [{
             "item_list": {
                 "items": [{
-                    "name": "item",
-                    "sku": "item",
-                    "price": "1.00",
+                    "name": "Donation",
+                    "sku": "Donation",
+                    "price": amount,
                     "currency": "USD",
                     "quantity": 1
                 }]
             },
             "amount": {
                 "currency": "USD",
-                "total": "1.00"
+                "total": amount
             },
             "description": "This is the payment description."
         }]
