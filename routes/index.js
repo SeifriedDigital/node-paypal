@@ -51,7 +51,7 @@ router.post('/create-payment/:amount', function(req, res, next) {
     var amount = req.params.amount
     console.log(amount)
 
-    if (amount = 0) {
+    if (amount <= 0) {
         res.redirect('./')
     }
 
